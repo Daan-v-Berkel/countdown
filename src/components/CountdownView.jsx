@@ -1,14 +1,16 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { DateTime } from 'luxon'
 import CountdownDisplay from './CountdownDisplay'
 
 export default function CountdownView() {
 	const { id } = useParams();
-	const [countdownData, setCountdownData] = useState(
-		JSON.parse(localStorage.getItem(id))
+	const [countdownData, setCountdownData] = useState({}
 	)
+
+	useEffect(() => {
+		setCountdownData(JSON.parse(localStorage.getItem(id)))
+	}, [id])
 
 	return (
 		<div>

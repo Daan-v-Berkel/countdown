@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-//import { useNavigate } from 'react-router-dom';
 import newTimezones from '../utils/timezones';
 import { DateTime, Settings } from 'luxon';
 import {Button} from './ui/button';
 import CountdownDisplay from './CountdownDisplay';
 
 function CountdownForm() {
-  //const [date, setDate] = useState((DateTime.now().plus({ days: 10 })).toISODate());
-  //const [time, setTime] = useState('00:00');
 	const [countdownData, setCountdownData] = useState({
 		date: (DateTime.now().plus({ days: 10 })).toISODate(),
 		time: '00:00:00',
@@ -16,28 +13,21 @@ function CountdownForm() {
 		errors: {},
 	});
 	const [createdCountdown, setCreatedCountdown] = useState(null);
-  //const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
 	Settings.defaultZone = countdownData.timezone;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const countdownId = Math.random().toString(36).substr(2, 9);  // Generate a unique id
     
-		const targetDate = getCountdown();
-		console.log(`timezone: ${countdownData.timezone}`);
-		console.log(targetDate);
-		// check if data is valid including created DateTime
-		if (!coundownDataValid(targetDate)) {
+		if (!coundownDataValid()) {
 			return;
 		}
-    // Save countdown data to localStorage or an API
+    // Save countdown data to localStorage atm
+		const countdownId = Math.random().toString(36).substr(2, 9);  // Generate a unique id
     localStorage.setItem(countdownId, JSON.stringify(countdownData));
     setCreatedCountdown(window.location + `countdown/${countdownId}`);
-    // Navigate to the public countdown page
-    //navigate(`/countdown/${countdownId}`);
   };
 
-	const coundownDataValid = (dateTimeCreated) => {
+	const coundownDataValid = () => {
 		const errors = {};
 
 		if (!DateTime.fromISO(countdownData.date).isValid) {
@@ -51,10 +41,9 @@ function CountdownForm() {
 			errors.timezone = "Invalid timezone";
 		}
 		if (countdownData.countdownName.length < 3 || countdownData.countdownName.length > 20) {
-			errors.countdownName = "Invalid countdownName";
+			errors.countdownName = "Name should be between 3 and 20 characters";
 		}
 
-		if (dateTimeCreated.invalid)
 		setCountdownData((prevState) => ({ ...prevState, errors: errors }));
 		if ((Object.keys(errors)).length > 0) {
 			return false;
@@ -68,10 +57,6 @@ function CountdownForm() {
 		errorsCopy[name] = "";
     setCountdownData((prevState) => ({ ...prevState, [name]: value, errors: errorsCopy }));
   };
-
-	const getCountdown = () => {
-		return DateTime.fromFormat(`${countdownData.date} ${countdownData.time}`, 'yyyy-MM-dd HH:mm:ss', { zone: countdownData.timezone });
-	}
 
   return (
     <div className='flex flex-row space-x-4'>

@@ -15,7 +15,6 @@ function CountdownDisplay({ countdownData }) {
 	const [isFinished, setIsFinished] = useState(false);
 
 	const getCountdown = () => {
-		console.log(`countdownData: ${JSON.stringify(countdownData)}`);
 		return DateTime.fromFormat(`${countdownData.date} ${countdownData.time}`, 'yyyy-MM-dd HH:mm:ss', { zone: countdownData.timezone });
 	}
 
@@ -23,7 +22,6 @@ function CountdownDisplay({ countdownData }) {
     let intervalId;
 
 		const countdownDateTime = getCountdown();
-		console.log(`countdownDateTime: ${countdownDateTime}`);
     if (countdownDateTime) {
       intervalId = setInterval(() => {
         const countdownDuration = countdownDateTime.diff(DateTime.now(), ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
