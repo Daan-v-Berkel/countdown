@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import React, { useState, useEffect } from 'react';
 
-function CountdownDisplay({ countdownDateTime }) {
+function CountdownDisplay({ countdownData }) {
   const [timeLeft, setTimeLeft] = useState(
 		{
 			years: null,
@@ -14,9 +14,16 @@ function CountdownDisplay({ countdownDateTime }) {
 	);
 	const [isFinished, setIsFinished] = useState(false);
 
+	const getCountdown = () => {
+		console.log(`countdownData: ${JSON.stringify(countdownData)}`);
+		return DateTime.fromFormat(`${countdownData.date} ${countdownData.time}`, 'yyyy-MM-dd HH:mm:ss', { zone: countdownData.timezone });
+	}
+
   useEffect(() => {
     let intervalId;
 
+		const countdownDateTime = getCountdown();
+		console.log(`countdownDateTime: ${countdownDateTime}`);
     if (countdownDateTime) {
       intervalId = setInterval(() => {
         const countdownDuration = countdownDateTime.diff(DateTime.now(), ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
@@ -40,7 +47,7 @@ function CountdownDisplay({ countdownDateTime }) {
         clearInterval(intervalId);
       }
     };
-  }, [countdownDateTime]);
+  }, [countdownData]);
 
 
   return (
