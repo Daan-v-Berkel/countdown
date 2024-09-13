@@ -8,6 +8,7 @@ function CountdownForm() {
 	const [countdownData, setCountdownData] = useState({
 		date: (DateTime.now().plus({ days: 10 })).toISODate(),
 		time: '00:00:00',
+		keepCounting: false,
 		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 		countdownName: 'My Countdown',
 		errors: {},
@@ -51,12 +52,18 @@ function CountdownForm() {
 		return true
 	}
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
+	function handleChange(event) {
+		const {name, value, type, checked} = event.target
 		const errorsCopy = { ...countdownData.errors };
 		errorsCopy[name] = "";
-    setCountdownData((prevState) => ({ ...prevState, [name]: value, errors: errorsCopy }));
-  };
+		setCountdownData(preCountdownData => {
+				return {
+						...preCountdownData,
+						[name]: type === "checkbox" ? checked : value,
+						errors: errorsCopy
+				}
+		})
+}
 
   return (
     <div className='flex flex-row space-x-4'>
@@ -105,6 +112,18 @@ function CountdownForm() {
 						</select>
 						{countdownData.errors.timezone && (
 							<p className='text-red-500'>{countdownData.errors.timezone}</p>
+						)}
+					</label>
+					<label>
+						Keep counting when time is up:
+						<input
+							type="checkbox"
+							name="keepCounting"
+							value={countdownData.keepCounting}
+							onChange={handleChange}
+						/>
+						{countdownData.errors.keepCounting && (
+							<p className='text-red-500'>{countdownData.errors.keepCounting}</p>
 						)}
 					</label>
 					<label>

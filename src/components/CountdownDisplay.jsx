@@ -25,11 +25,13 @@ function CountdownDisplay({ countdownData }) {
     if (countdownDateTime) {
       intervalId = setInterval(() => {
         const countdownDuration = countdownDateTime.diff(DateTime.now(), ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
-
-        if (countdownDuration.toMillis() <= 0) {
+				console.log(countdownDuration.toMillis())
+				console.log(typeof countdownData.keepCounting)
+        if ((countdownDuration.toMillis() <= 0) && !countdownData.keepCounting) {
           setIsFinished(true);
           clearInterval(intervalId);
         } else {
+					setIsFinished(false);
           setTimeLeft(() => {
             return {
               ...timeLeft,
@@ -51,14 +53,14 @@ function CountdownDisplay({ countdownData }) {
   return (
     <div className="border-2 border-slate-200 grow flex items-center align-middle">
 			<div className="w-fit h-fit mx-auto">
-				{isFinished ? <p>Countdown finished</p>
+				{(isFinished && !countdownData.keepCounting) ? <p>Countdown finished</p>
 				:
 				timeLeft.seconds === null
 				?
 				<p>Loading...</p>
 					:
 					Object.entries(timeLeft).map(([key, value]) => (
-						value > 0 && <span key={key}>{parseInt(value)} {key} </span>
+						Math.abs(value) > 0 && <span key={key}>{Math.abs(parseInt(value))} {key} </span>
 					))}
 			</div>
     </div>
