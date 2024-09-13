@@ -11,6 +11,10 @@ function CountdownForm() {
 		keepCounting: false,
 		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 		countdownName: 'My Countdown',
+		showName: true,
+		countdownLink: '',
+		linkText: '',
+		linkType: 'button',
 		errors: {},
 	});
 	const [createdCountdown, setCreatedCountdown] = useState(null);
@@ -119,7 +123,7 @@ function CountdownForm() {
 						<input
 							type="checkbox"
 							name="keepCounting"
-							value={countdownData.keepCounting}
+							checked={countdownData.keepCounting}
 							onChange={handleChange}
 						/>
 						{countdownData.errors.keepCounting && (
@@ -138,6 +142,80 @@ function CountdownForm() {
 							<p className='text-red-500'>{countdownData.errors.countdownName}</p>
 						)}
 					</label>
+					<label>
+						display name in counter:
+						<input
+							type="checkbox"
+							name="showName"
+							checked={countdownData.showName}
+							onChange={handleChange}
+						/>
+						{countdownData.errors.showName && (
+							<p className='text-red-500'>{countdownData.errors.showName}</p>
+						)}
+					</label>
+					<label>
+						Link:
+						<input
+							type="text"
+							name="countdownLink"
+							placeholder='https://example.com'
+							value={countdownData.countdownLink}
+							onChange={handleChange}
+						/>
+						{countdownData.errors.countdownLink && (
+							<p className='text-red-500'>{countdownData.errors.countdownLink}</p>
+						)}
+					</label>
+
+					<fieldset>
+						<legend>Display link as</legend>
+						<input 
+								type="radio"
+								id="button"
+								name="linkType"
+								value="button"
+								checked={countdownData.linkType === "button"}
+								onChange={handleChange}
+						/>
+						<label htmlFor="button">button</label>
+						<br />
+						
+						<input 
+								type="radio"
+								id="whole"
+								name="linkType"
+								value="whole"
+								checked={countdownData.linkType === "whole"}
+								onChange={handleChange}
+						/>
+						<label htmlFor="whole">entire countdown area</label>
+						<br />
+						
+						<input 
+								type="radio"
+								id="link"
+								name="linkType"
+								value="link"
+								checked={countdownData.linkType === "link"}
+								onChange={handleChange}
+						/>
+						<label htmlFor="link">link</label>
+						<br />
+						<label>
+						Link text:
+						<input
+							type="text"
+							name="linkText"
+							placeholder='text on the button'
+							value={countdownData.linkText}
+							onChange={handleChange}
+						/>
+						{countdownData.errors.linkText && (
+							<p className='text-red-500'>{countdownData.errors.linkText}</p>
+						)}
+					</label>
+          </fieldset>
 					<Button>Create Countdown</Button>
 				</form>
 				{createdCountdown && <p>Created countdown: <a href={createdCountdown}>{createdCountdown}</a></p>}

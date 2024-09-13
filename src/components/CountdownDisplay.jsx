@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import React, { useState, useEffect } from 'react';
+import { Button } from './ui/button';
 
 function CountdownDisplay({ countdownData }) {
   const [timeLeft, setTimeLeft] = useState(
@@ -25,20 +26,18 @@ function CountdownDisplay({ countdownData }) {
     if (countdownDateTime) {
       intervalId = setInterval(() => {
         const countdownDuration = countdownDateTime.diff(DateTime.now(), ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
-				console.log(countdownDuration.toMillis())
-				console.log(typeof countdownData.keepCounting)
         if ((countdownDuration.toMillis() <= 0) && !countdownData.keepCounting) {
           setIsFinished(true);
           clearInterval(intervalId);
         } else {
 					setIsFinished(false);
-          setTimeLeft(() => {
-            return {
-              ...timeLeft,
-              ...countdownDuration.toObject(),
-            }
-          });
         }
+				setTimeLeft(() => {
+					return {
+						...timeLeft,
+						...countdownDuration.toObject(),
+					}
+				});
       }, 1000);
     }
 
@@ -51,18 +50,31 @@ function CountdownDisplay({ countdownData }) {
 
 
   return (
-    <div className="border-2 border-slate-200 grow flex items-center align-middle">
-			<div className="w-fit h-fit mx-auto">
+    <div className="border-2 border-slate-200 grow flex flex-col items-center align-middle">
+			{countdownData.showName &&<div>
+				<h6 className="text-center text-3xl text-green-200 py-2">{countdownData.countdownName}</h6>
+			</div>}
+			<div className="w-fit h-fit mx-auto my-auto">
 				{(isFinished && !countdownData.keepCounting) ? <p>Countdown finished</p>
 				:
 				timeLeft.seconds === null
 				?
 				<p>Loading...</p>
-					:
-					Object.entries(timeLeft).map(([key, value]) => (
-						Math.abs(value) > 0 && <span key={key}>{Math.abs(parseInt(value))} {key} </span>
-					))}
+				:
+				Object.entries(timeLeft).map(([key, value]) => (
+					Math.abs(value) > 0 && <span key={key}>{Math.abs(parseInt(value))} {key} </span>
+				))
+			}
 			</div>
+			{countdownData.countdownLink && 
+			["link", "button"].includes(countdownData.linkType) &&
+			<div>
+				<a href={countdownData.countdownLink} target="_blank" rel="noreferrer">
+					<Button
+					variant={countdownData.linkType === "link" ? "link" : "default"}
+					>{countdownData.linkText || countdownData.countdownLink}</Button>
+				</a>
+			</div>}
     </div>
   );
 }
