@@ -31,30 +31,35 @@ function CountdownForm() {
 	}
 
   return (
-    <div>
-      <h1 className='text-3xl py-4 px-2'>Create a Countdown</h1>
-      <form onSubmit={handleSubmit}
-			className="flex flex-col space-y-2 max-w-sm">
-        <div>
-          <label>Date:</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-        </div>
-        <div>
-          <label>Time:</label>
-          <input type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
-        </div>
-        <div>
-          <label>Timezone:</label>
-          <select value={timezone} onChange={(e) => setTimezone(e.target.label)} required>
-            {newTimezones.map(tz => (
-              <option key={tz} value={tz}>{tz}</option>
-            ))}
-          </select>
-        </div>
-        <Button>Create Countdown</Button>
-      </form>
-			{createdCountdown && <p>Created countdown: <a href={createdCountdown}>{createdCountdown}</a></p>}
-			<CountdownDisplay countdownDateTime={getCountdown()} />
+    <div className='flex flex-row space-x-4'>
+			<div className='border-2 border-red-500 flex flex-col space-y-2 py-4 px-2'>
+				<h2 className='text-3xl'>Create a Countdown</h2>
+				<form onSubmit={handleSubmit} 
+							className="flex flex-col space-y-2 max-w-sm">
+					<div>
+						<label>Date:</label>
+						<input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+					</div>
+					<div>
+						<label>Time:</label>
+						<input type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
+					</div>
+					<div>
+						<label>Timezone:</label>
+						<select value={timezone} onChange={(e) => setTimezone(e.target.label)} required>
+							{newTimezones.map(tz => (
+								<option key={tz} value={tz}>{tz}</option>
+							))}
+						</select>
+					</div>
+					<Button>Create Countdown</Button>
+				</form>
+				{createdCountdown && <p>Created countdown: <a href={createdCountdown}>{createdCountdown}</a></p>}
+			</div>
+			<div className='flex flex-col space-y-2 py-4 px-2 grow'>
+				<h2 className='text-3xl'>Countdown Preview</h2>
+				<CountdownDisplay countdownDateTime={getCountdown()} />
+			</div>
     </div>
   );
 }

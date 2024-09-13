@@ -44,16 +44,18 @@ function CountdownDisplay({ countdownDateTime }) {
 
 
   return (
-    <div>
-			{isFinished ? <p>Countdown finished</p>
-			:
-			timeLeft.seconds === null
-			? 
-			<p>Loading...</p>
+    <div className="border-2 border-slate-200 grow flex items-center align-middle">
+			<div className="w-fit h-fit mx-auto">
+				{isFinished ? <p>Countdown finished</p>
 				:
-				Object.entries(timeLeft).map(([key, value]) => (
-					value > 0 && <span key={key}>{parseInt(value)} {key} </span>
-				))}
+				timeLeft.seconds === null
+				?
+				<p>Loading...</p>
+					:
+					Object.entries(timeLeft).map(([key, value]) => (
+						value > 0 && <span key={key}>{parseInt(value)} {key} </span>
+					))}
+			</div>
     </div>
   );
 }
