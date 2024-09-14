@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import newTimezones from '../utils/timezones';
 import { DateTime, Settings } from 'luxon';
 import {Button} from './ui/button';
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group"
 import CountdownDisplay from './CountdownDisplay';
 
 function CountdownForm() {
@@ -10,6 +11,16 @@ function CountdownForm() {
 		time: '00:00:00',
 		keepCounting: false,
 		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+		timeValuesDisplayed : {
+			years: false,
+			quarters: false,
+			months: false,
+			weeks: false,
+			days: true,
+			hours: true,
+			minutes: true,
+			seconds: true,
+		},
 		countdownName: 'My Countdown',
 		showName: true,
 		countdownLink: '',
@@ -57,6 +68,7 @@ function CountdownForm() {
 	}
 
 	function handleChange(event) {
+		console.log(event.target)
 		const {name, value, type, checked} = event.target
 		const errorsCopy = { ...countdownData.errors };
 		errorsCopy[name] = "";
@@ -67,6 +79,30 @@ function CountdownForm() {
 						errors: errorsCopy
 				}
 		})
+}
+
+function handleValueChange(value) {
+	// essentially the same as handleChange but nessessary for Togglegroup
+	const valueschanged = {
+		years: false,
+		quarters: false,
+		months: false,
+		weeks: false,
+		days: false,
+		hours: false,
+		minutes: false,
+		seconds: false,
+	}
+	value.forEach(element => {
+		valueschanged[element] = true
+	});
+
+	setCountdownData(preCountdownData => {
+		return {
+			...preCountdownData,
+			timeValuesDisplayed: {...preCountdownData.timeValuesDisplayed, ...valueschanged}
+		}
+	})
 }
 
   return (
@@ -130,6 +166,21 @@ function CountdownForm() {
 							<p className='text-red-500'>{countdownData.errors.keepCounting}</p>
 						)}
 					</label>
+
+					<ToggleGroup type="multiple" variant="outline" className="justify-start flex-row flex-wrap" 
+					value={Object.keys(countdownData.timeValuesDisplayed).filter((key) => countdownData.timeValuesDisplayed[key])}
+					onValueChange={handleValueChange}
+					name="timeValuesDisplayed">
+						{Object.entries(countdownData.timeValuesDisplayed).map(([key, value]) => (
+							<ToggleGroupItem 
+								defaultChecked={value} 
+								value={key} key={key}
+								name={key}
+								>{key}
+								</ToggleGroupItem>
+						))}
+					</ToggleGroup>
+
 					<label>
 						Name:
 						<input

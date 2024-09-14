@@ -25,7 +25,8 @@ function CountdownDisplay({ countdownData }) {
 		const countdownDateTime = getCountdown();
     if (countdownDateTime) {
       intervalId = setInterval(() => {
-        const countdownDuration = countdownDateTime.diff(DateTime.now(), ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
+        const countdownDuration = countdownDateTime.diff(DateTime.now(), 
+				Object.keys(countdownData.timeValuesDisplayed).filter((key) => countdownData.timeValuesDisplayed[key]));
         if ((countdownDuration.toMillis() <= 0) && !countdownData.keepCounting) {
           setIsFinished(true);
           clearInterval(intervalId);
@@ -34,7 +35,6 @@ function CountdownDisplay({ countdownData }) {
         }
 				setTimeLeft(() => {
 					return {
-						...timeLeft,
 						...countdownDuration.toObject(),
 					}
 				});
