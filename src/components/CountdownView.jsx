@@ -5,17 +5,19 @@ import CountdownDisplay from './CountdownDisplay'
 
 export default function CountdownView() {
 	const { id } = useParams();
-	const [countdownData, setCountdownData] = useState({}
-	)
+	const [countdownData, setCountdownData] = useState({})
+	const [countdownDetails, setCountdownDetails] = useState({})
 
 	useEffect(() => {
-		setCountdownData(JSON.parse(localStorage.getItem(id)))
+		const allData = JSON.parse(localStorage.getItem(id))
+		setCountdownData(allData.countdownData)
+		setCountdownDetails(allData.countdownDetails)
 	}, [id])
 
 	return (
 		<div>
 			<h1 className='text-3xl'>Countdown</h1>
-			<CountdownDisplay countdownData={countdownData} />
+			<CountdownDisplay countdownData={countdownData} countdownDetails={countdownDetails} />
 		</div>
 	)
 }

@@ -13,7 +13,6 @@ function CountdownDisplay({ countdownData, countdownDetails }) {
 			seconds: null,
 		}
 	);
-	const [duration, SetDuration] = useState(Duration.fromMillis(0));
 	const [isFinished, setIsFinished] = useState(false);
 
 	const getCountdown = () => {
@@ -63,6 +62,9 @@ function CountdownDisplay({ countdownData, countdownDetails }) {
 				<p>Loading...</p>
 				:
 				Object.entries(timeLeft).map(([key, value]) => (
+					countdownDetails.forceTimeValueWhenEmpty ?
+					<span key={key}>{Math.abs(parseInt(value))} {key} </span>
+					:
 					Math.abs(value) > 0 && <span key={key}>{Math.abs(parseInt(value))} {key} </span>
 				))
 			}

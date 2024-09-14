@@ -29,6 +29,7 @@ function CountdownForm() {
 		countdownLink: '',
 		linkText: '',
 		linkType: 'button',
+		forceTimeValueWhenEmpty: false,
 		errors: {},
 	});
 	const [createdCountdown, setCreatedCountdown] = useState(null);
@@ -42,7 +43,7 @@ function CountdownForm() {
 		}
     // Save countdown data to localStorage atm
 		const countdownId = Math.random().toString(36).substr(2, 9);  // Generate a unique id
-    localStorage.setItem(countdownId, JSON.stringify(countdownData));
+    localStorage.setItem(countdownId, JSON.stringify({countdownData: countdownData, countdownDetails: countdownDetails}));
     setCreatedCountdown(window.location + `countdown/${countdownId}`);
   };
 
@@ -188,14 +189,26 @@ function CountdownForm() {
 					name="timeValuesDisplayed">
 						{Object.entries(countdownData.timeValuesDisplayed).map(([key, value]) => (
 							<ToggleGroupItem 
-								defaultChecked={value} 
-								value={key} key={key}
-								name={key}
-								>{key}
+							defaultChecked={value} 
+							value={key} key={key}
+							name={key}
+							>{key}
 								</ToggleGroupItem>
 						))}
 					</ToggleGroup>
 
+					<label>
+						Display values when empty:
+						<input
+							type="checkbox"
+							name="forceTimeValueWhenEmpty"
+							checked={countdownDetails.keepCforceTimeValueWhenEmptyounting}
+							onChange={handleDetailChange}
+						/>
+						{countdownDetails.errors.forceTimeValueWhenEmpty && (
+							<p className='text-red-500'>{countdownDetails.errors.forceTimeValueWhenEmpty}</p>
+						)}
+					</label>
 					<label>
 						Name:
 						<input
