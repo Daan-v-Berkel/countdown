@@ -1,8 +1,8 @@
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 
-function CountdownDisplay({ countdownData }) {
+function CountdownDisplay({ countdownData, countdownDetails }) {
   const [timeLeft, setTimeLeft] = useState(
 		{
 			years: null,
@@ -13,6 +13,7 @@ function CountdownDisplay({ countdownData }) {
 			seconds: null,
 		}
 	);
+	const [duration, SetDuration] = useState(Duration.fromMillis(0));
 	const [isFinished, setIsFinished] = useState(false);
 
 	const getCountdown = () => {
@@ -51,8 +52,8 @@ function CountdownDisplay({ countdownData }) {
 
   return (
     <div className="border-2 border-slate-200 grow flex flex-col items-center align-middle">
-			{countdownData.showName &&<div>
-				<h6 className="text-center text-3xl text-green-200 py-2">{countdownData.countdownName}</h6>
+			{countdownDetails.showName &&<div>
+				<h6 className="text-center text-3xl text-green-200 py-2">{countdownDetails.countdownName}</h6>
 			</div>}
 			<div className="w-fit h-fit mx-auto my-auto">
 				{(isFinished && !countdownData.keepCounting) ? <p>Countdown finished</p>
@@ -66,13 +67,13 @@ function CountdownDisplay({ countdownData }) {
 				))
 			}
 			</div>
-			{countdownData.countdownLink && 
-			["link", "button"].includes(countdownData.linkType) &&
+			{countdownDetails.countdownLink && 
+			["link", "button"].includes(countdownDetails.linkType) &&
 			<div>
-				<a href={countdownData.countdownLink} target="_blank" rel="noreferrer">
+				<a href={countdownDetails.countdownLink} target="_blank" rel="noreferrer">
 					<Button
-					variant={countdownData.linkType === "link" ? "link" : "default"}
-					>{countdownData.linkText || countdownData.countdownLink}</Button>
+					variant={countdownDetails.linkType === "link" ? "link" : "default"}
+					>{countdownDetails.linkText || countdownDetails.countdownLink}</Button>
 				</a>
 			</div>}
     </div>

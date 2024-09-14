@@ -9,8 +9,8 @@ function CountdownForm() {
 	const [countdownData, setCountdownData] = useState({
 		date: (DateTime.now().plus({ days: 10 })).toISODate(),
 		time: '00:00:00',
-		keepCounting: false,
 		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+		keepCounting: false,
 		timeValuesDisplayed : {
 			years: false,
 			quarters: false,
@@ -21,6 +21,9 @@ function CountdownForm() {
 			minutes: true,
 			seconds: true,
 		},
+		errors: {},
+	});
+	const [countdownDetails, setCountdownDetails] = useState({
 		countdownName: 'My Countdown',
 		showName: true,
 		countdownLink: '',
@@ -56,7 +59,7 @@ function CountdownForm() {
 		if (!newTimezones.includes(countdownData.timezone)) {
 			errors.timezone = "Invalid timezone";
 		}
-		if (countdownData.countdownName.length < 3 || countdownData.countdownName.length > 20) {
+		if (countdownDetails.countdownName.length < 3 || countdownDetails.countdownName.length > 20) {
 			errors.countdownName = "Name should be between 3 and 20 characters";
 		}
 
@@ -67,8 +70,7 @@ function CountdownForm() {
 		return true
 	}
 
-	function handleChange(event) {
-		console.log(event.target)
+	function handleTimeChange(event) {
 		const {name, value, type, checked} = event.target
 		const errorsCopy = { ...countdownData.errors };
 		errorsCopy[name] = "";
@@ -79,31 +81,44 @@ function CountdownForm() {
 						errors: errorsCopy
 				}
 		})
-}
-
-function handleValueChange(value) {
-	// essentially the same as handleChange but nessessary for Togglegroup
-	const valueschanged = {
-		years: false,
-		quarters: false,
-		months: false,
-		weeks: false,
-		days: false,
-		hours: false,
-		minutes: false,
-		seconds: false,
 	}
-	value.forEach(element => {
-		valueschanged[element] = true
-	});
 
-	setCountdownData(preCountdownData => {
-		return {
-			...preCountdownData,
-			timeValuesDisplayed: {...preCountdownData.timeValuesDisplayed, ...valueschanged}
+	function handleDetailChange(event) {
+		const {name, value, type, checked} = event.target
+		const errorsCopy = { ...countdownDetails.errors };
+		errorsCopy[name] = "";
+		setCountdownDetails(preCountdownDetails => {
+				return {
+						...preCountdownDetails,
+						[name]: type === "checkbox" ? checked : value,
+						errors: errorsCopy
+				}
+		})
+	}
+
+	function handleValueChange(values) {
+		// essentially the same as handleChange but nessessary for Togglegroup
+		const valueschanged = {
+			years: false,
+			quarters: false,
+			months: false,
+			weeks: false,
+			days: false,
+			hours: false,
+			minutes: false,
+			seconds: false,
 		}
-	})
-}
+		values.forEach(element => {
+			valueschanged[element] = true
+		});
+
+		setCountdownData(precountdownData => {
+			return {
+				...precountdownData,
+				timeValuesDisplayed: {...precountdownData.timeValuesDisplayed, ...valueschanged}
+			}
+		})
+	}
 
   return (
     <div className='flex flex-row space-x-4'>
@@ -117,7 +132,7 @@ function handleValueChange(value) {
 							type="date"
 							name="date"
 							value={countdownData.date}
-							onChange={handleChange}
+							onChange={handleTimeChange}
 							required
 						/>
 						{countdownData.errors.date && (
@@ -131,7 +146,7 @@ function handleValueChange(value) {
 							name="time"
 							step={1}
 							value={countdownData.time}
-							onChange={handleChange}
+							onChange={handleTimeChange}
 							required
 						/>
 						{countdownData.errors.time && (
@@ -143,7 +158,7 @@ function handleValueChange(value) {
 						<select
 							name="timezone"
 							value={countdownData.timezone}
-							onChange={handleChange}
+							onChange={handleTimeChange}
 							required
 						>
 							{newTimezones.map(tz => (
@@ -160,7 +175,7 @@ function handleValueChange(value) {
 							type="checkbox"
 							name="keepCounting"
 							checked={countdownData.keepCounting}
-							onChange={handleChange}
+							onChange={handleTimeChange}
 						/>
 						{countdownData.errors.keepCounting && (
 							<p className='text-red-500'>{countdownData.errors.keepCounting}</p>
@@ -186,11 +201,11 @@ function handleValueChange(value) {
 						<input
 							type="text"
 							name="countdownName"
-							value={countdownData.countdownName}
-							onChange={handleChange}
+							value={countdownDetails.countdownName}
+							onChange={handleDetailChange}
 						/>
-						{countdownData.errors.countdownName && (
-							<p className='text-red-500'>{countdownData.errors.countdownName}</p>
+						{countdownDetails.errors.countdownName && (
+							<p className='text-red-500'>{countdownDetails.errors.countdownName}</p>
 						)}
 					</label>
 					<label>
@@ -198,11 +213,11 @@ function handleValueChange(value) {
 						<input
 							type="checkbox"
 							name="showName"
-							checked={countdownData.showName}
-							onChange={handleChange}
+							checked={countdownDetails.showName}
+							onChange={handleDetailChange}
 						/>
-						{countdownData.errors.showName && (
-							<p className='text-red-500'>{countdownData.errors.showName}</p>
+						{countdownDetails.errors.showName && (
+							<p className='text-red-500'>{countdownDetails.errors.showName}</p>
 						)}
 					</label>
 					<label>
@@ -211,11 +226,11 @@ function handleValueChange(value) {
 							type="text"
 							name="countdownLink"
 							placeholder='https://example.com'
-							value={countdownData.countdownLink}
-							onChange={handleChange}
+							value={countdownDetails.countdownLink}
+							onChange={handleDetailChange}
 						/>
-						{countdownData.errors.countdownLink && (
-							<p className='text-red-500'>{countdownData.errors.countdownLink}</p>
+						{countdownDetails.errors.countdownLink && (
+							<p className='text-red-500'>{countdownDetails.errors.countdownLink}</p>
 						)}
 					</label>
 
@@ -226,8 +241,8 @@ function handleValueChange(value) {
 								id="button"
 								name="linkType"
 								value="button"
-								checked={countdownData.linkType === "button"}
-								onChange={handleChange}
+								checked={countdownDetails.linkType === "button"}
+								onChange={handleDetailChange}
 						/>
 						<label htmlFor="button">button</label>
 						<br />
@@ -237,8 +252,8 @@ function handleValueChange(value) {
 								id="whole"
 								name="linkType"
 								value="whole"
-								checked={countdownData.linkType === "whole"}
-								onChange={handleChange}
+								checked={countdownDetails.linkType === "whole"}
+								onChange={handleDetailChange}
 						/>
 						<label htmlFor="whole">entire countdown area</label>
 						<br />
@@ -248,8 +263,8 @@ function handleValueChange(value) {
 								id="link"
 								name="linkType"
 								value="link"
-								checked={countdownData.linkType === "link"}
-								onChange={handleChange}
+								checked={countdownDetails.linkType === "link"}
+								onChange={handleDetailChange}
 						/>
 						<label htmlFor="link">link</label>
 						<br />
@@ -259,11 +274,11 @@ function handleValueChange(value) {
 							type="text"
 							name="linkText"
 							placeholder='text on the button'
-							value={countdownData.linkText}
-							onChange={handleChange}
+							value={countdownDetails.linkText}
+							onChange={handleDetailChange}
 						/>
-						{countdownData.errors.linkText && (
-							<p className='text-red-500'>{countdownData.errors.linkText}</p>
+						{countdownDetails.errors.linkText && (
+							<p className='text-red-500'>{countdownDetails.errors.linkText}</p>
 						)}
 					</label>
           </fieldset>
@@ -273,7 +288,7 @@ function handleValueChange(value) {
 			</div>
 			<div className='flex flex-col space-y-2 py-4 px-2 grow'>
 				<h2 className='text-3xl'>Countdown Preview</h2>
-				<CountdownDisplay countdownData={countdownData} />
+				<CountdownDisplay countdownData={countdownData} countdownDetails={countdownDetails} />
 			</div>
     </div>
   );
