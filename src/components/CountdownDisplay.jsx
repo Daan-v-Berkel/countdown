@@ -54,11 +54,15 @@ function CountdownDisplay({ className, countdownData, countdownDetails, countdow
     <div className={clsx("grow flex flex-col items-center align-middle", className)}
 		style={{
 			border: `${countdownStyling.outerBorderWidth}px ${countdownStyling.outerBorderStyle} ${countdownStyling.outerBorderColor}`,
+			background: countdownStyling.outerBackgroundColor,
 			}}>
 			{countdownDetails.showName &&<div>
-				<h6 className="text-center text-3xl text-green-200 py-2">{countdownDetails.countdownName}</h6>
+				<h6 className="text-center text-2xl text-green-200 py-2">{countdownDetails.countdownName}</h6>
 			</div>}
-			<div className="w-fit h-fit mx-auto my-auto">
+			<div className={clsx(`w-fit h-fit mx-auto my-auto flex ${countdownStyling.counterOrientation === "vertical" ? "flex-col" : "flex-row"}`)}
+			style={{
+				gap: `${countdownStyling.counterSpacing}px`,
+			}}>
 				{(isFinished && !countdownData.keepCounting) ? <p>Countdown finished</p>
 				:
 				timeLeft.seconds === null

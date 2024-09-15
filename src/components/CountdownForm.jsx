@@ -3,9 +3,10 @@ import newTimezones from '../utils/timezones';
 import { DateTime, Settings } from 'luxon';
 import {Button} from './ui/button';
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group"
+import { Slider } from "@/components/ui/slider"
 import CountdownDisplay from './CountdownDisplay';
 
-function CountdownForm() {
+function CountdownForm({ setLatestCountdowns }) {
 	const [countdownData, setCountdownData] = useState({
 		date: (DateTime.now().plus({ days: 10 })).toISODate(),
 		time: '00:00:00',
@@ -37,11 +38,17 @@ function CountdownForm() {
 		outerBorderColor: '#00FF00',
 		outerBorderWidth: 2,
 		outerBorderStyle: 'solid',
+		innerBorderColor: '#00FF00',
+		innerBorderWidth: 1,
+		innerBorderStyle: 'solid',
+		counterOrientation: 'horizontal',
+		counterSpacing: 4,
+		outerBackgroundColor: '#FFFFFF',
+		countdownNameSize: 24,
 		errors: {},
 	})
 	const [createdCountdown, setCreatedCountdown] = useState(null);
 	Settings.defaultZone = countdownData.timezone;
-
   const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -49,9 +56,10 @@ function CountdownForm() {
 			return;
 		}
     // Save countdown data to localStorage atm
-		const countdownId = Math.random().toString(36).substr(2, 9);  // Generate a unique id
+		const countdownId = `cd-${Math.random().toString(36).substr(2, 9)}`;  // Generate a unique id
     localStorage.setItem(countdownId, JSON.stringify({countdownData: countdownData, countdownDetails: countdownDetails, countdownStyling: countdownStyling}));
     setCreatedCountdown(window.location + `countdown/${countdownId}`);
+		setLatestCountdowns((prevState) => [...prevState, countdownId]);
   };
 
 	const coundownDataValid = () => {
@@ -136,6 +144,15 @@ function CountdownForm() {
 			return {
 				...precountdownData,
 				timeValuesDisplayed: {...precountdownData.timeValuesDisplayed, ...valueschanged}
+			}
+		})
+	}
+
+	function handleStyleValueChange(name, values) {
+		setCountdownStyling(precountdownStyling => {
+			return {
+				...precountdownStyling,
+				[name]: values
 			}
 		})
 	}
@@ -327,20 +344,7 @@ function CountdownForm() {
 							<p className='text-red-500'>{countdownStyling.errors.outerBorderColor}</p>
 						)}
 					</label>
-						<label>
-						Border width:
-						<input
-							type="number"
-							name="outerBorderWidth"
-							min={0} max={20}
-							value={countdownStyling.outerBorderWidth}
-							onChange={handleStyleChange}
-						/>
-						{countdownStyling.errors.outerBorderWidth && (
-							<p className='text-red-500'>{countdownStyling.errors.outerBorderWidth}</p>
-						)}
-					</label>
-						<label>
+					<label>
 						Border style:
 						<select
 							name="outerBorderStyle"
@@ -355,6 +359,43 @@ function CountdownForm() {
 							<p className='text-red-500'>{countdownStyling.errors.outerBorderStyle}</p>
 						)}
 					</label>
+					<label>
+						counter spacing:
+						<Slider value={[countdownStyling.counterSpacing]} onValueChange={(values) => handleStyleValueChange("counterSpacing", values)}
+						max={100} min={0} step={1} />
+						{countdownStyling.errors.counterSpacing && (
+							<p className='text-red-500'>{countdownStyling.errors.counterSpacing}</p>
+						)}
+					</label>
+
+					<ToggleGroup type="single" variant="outline" className="justify-start flex-row flex-wrap" 
+					onValueChange={(values) => handleStyleValueChange("counterOrientation", values)}
+					name="counterOrientation" value={countdownStyling.counterOrientation}>
+							<ToggleGroupItem
+							value="horizontal"
+							>horizontal
+								</ToggleGroupItem>
+							<ToggleGroupItem
+							value="vertical"
+							>vertical
+								</ToggleGroupItem>
+					</ToggleGroup>
+
+					<br />
+						<label>
+						Background color:
+						<input
+							type="color"
+							name="outerBackgroundColor"
+							value={countdownStyling.outerBackgroundColor}
+							onChange={handleStyleChange}
+						/>
+						{countdownStyling.errors.outerBackgroundColor && (
+							<p className='text-red-500'>{countdownStyling.errors.outerBackgroundColor}</p>
+						)}
+					</label>
+
+
 					<Button>Create Countdown</Button>
 				</form>
 				{createdCountdown && <p>Created countdown: <a href={createdCountdown}>{createdCountdown}</a></p>}
