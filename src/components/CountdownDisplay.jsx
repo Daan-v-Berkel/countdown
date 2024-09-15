@@ -1,8 +1,9 @@
 import { DateTime, Duration } from 'luxon';
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
+import clsx from 'clsx';
 
-function CountdownDisplay({ countdownData, countdownDetails }) {
+function CountdownDisplay({ className, countdownData, countdownDetails, countdownStyling }) {
   const [timeLeft, setTimeLeft] = useState(
 		{
 			years: null,
@@ -50,7 +51,10 @@ function CountdownDisplay({ countdownData, countdownDetails }) {
 
 
   return (
-    <div className="border-2 border-slate-200 grow flex flex-col items-center align-middle">
+    <div className={clsx("grow flex flex-col items-center align-middle", className)}
+		style={{
+			border: `${countdownStyling.outerBorderWidth}px ${countdownStyling.outerBorderStyle} ${countdownStyling.outerBorderColor}`,
+			}}>
 			{countdownDetails.showName &&<div>
 				<h6 className="text-center text-3xl text-green-200 py-2">{countdownDetails.countdownName}</h6>
 			</div>}

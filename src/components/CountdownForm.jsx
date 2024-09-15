@@ -32,6 +32,13 @@ function CountdownForm() {
 		forceTimeValueWhenEmpty: false,
 		errors: {},
 	});
+
+	const [countdownStyling, setCountdownStyling] = useState({
+		outerBorderColor: '#00FF00',
+		outerBorderWidth: 2,
+		outerBorderStyle: 'solid',
+		errors: {},
+	})
 	const [createdCountdown, setCreatedCountdown] = useState(null);
 	Settings.defaultZone = countdownData.timezone;
 
@@ -43,7 +50,7 @@ function CountdownForm() {
 		}
     // Save countdown data to localStorage atm
 		const countdownId = Math.random().toString(36).substr(2, 9);  // Generate a unique id
-    localStorage.setItem(countdownId, JSON.stringify({countdownData: countdownData, countdownDetails: countdownDetails}));
+    localStorage.setItem(countdownId, JSON.stringify({countdownData: countdownData, countdownDetails: countdownDetails, countdownStyling: countdownStyling}));
     setCreatedCountdown(window.location + `countdown/${countdownId}`);
   };
 
@@ -91,6 +98,18 @@ function CountdownForm() {
 		setCountdownDetails(preCountdownDetails => {
 				return {
 						...preCountdownDetails,
+						[name]: type === "checkbox" ? checked : value,
+						errors: errorsCopy
+				}
+		})
+	}
+	function handleStyleChange(event) {
+		const {name, value, type, checked} = event.target
+		const errorsCopy = { ...countdownStyling.errors };
+		errorsCopy[name] = "";
+		setCountdownStyling(preCountdownStyling => {
+				return {
+						...preCountdownStyling,
 						[name]: type === "checkbox" ? checked : value,
 						errors: errorsCopy
 				}
@@ -278,7 +297,7 @@ function CountdownForm() {
 								value="link"
 								checked={countdownDetails.linkType === "link"}
 								onChange={handleDetailChange}
-						/>
+								/>
 						<label htmlFor="link">link</label>
 						<br />
 						<label>
@@ -289,19 +308,63 @@ function CountdownForm() {
 							placeholder='text on the button'
 							value={countdownDetails.linkText}
 							onChange={handleDetailChange}
-						/>
+							/>
 						{countdownDetails.errors.linkText && (
 							<p className='text-red-500'>{countdownDetails.errors.linkText}</p>
 						)}
 					</label>
-          </fieldset>
+				</fieldset>
+						<br />
+						<label>
+						Border color:
+						<input
+							type="color"
+							name="outerBorderColor"
+							value={countdownStyling.outerBorderColor}
+							onChange={handleStyleChange}
+						/>
+						{countdownStyling.errors.outerBorderColor && (
+							<p className='text-red-500'>{countdownStyling.errors.outerBorderColor}</p>
+						)}
+					</label>
+						<label>
+						Border width:
+						<input
+							type="number"
+							name="outerBorderWidth"
+							min={0} max={20}
+							value={countdownStyling.outerBorderWidth}
+							onChange={handleStyleChange}
+						/>
+						{countdownStyling.errors.outerBorderWidth && (
+							<p className='text-red-500'>{countdownStyling.errors.outerBorderWidth}</p>
+						)}
+					</label>
+						<label>
+						Border style:
+						<select
+							name="outerBorderStyle"
+							value={countdownStyling.outerBorderStyle}
+							onChange={handleStyleChange}
+						>
+							{["hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"].map((style) => (
+								<option key={style} value={style}>{style}</option>
+							))}
+						</select>
+						{countdownStyling.errors.outerBorderStyle && (
+							<p className='text-red-500'>{countdownStyling.errors.outerBorderStyle}</p>
+						)}
+					</label>
 					<Button>Create Countdown</Button>
 				</form>
 				{createdCountdown && <p>Created countdown: <a href={createdCountdown}>{createdCountdown}</a></p>}
 			</div>
 			<div className='flex flex-col space-y-2 py-4 px-2 grow'>
 				<h2 className='text-3xl'>Countdown Preview</h2>
-				<CountdownDisplay countdownData={countdownData} countdownDetails={countdownDetails} />
+				<CountdownDisplay 
+				countdownData={countdownData}
+				countdownDetails={countdownDetails}
+				countdownStyling={countdownStyling} />
 			</div>
     </div>
   );
