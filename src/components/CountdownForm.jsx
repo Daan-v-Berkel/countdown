@@ -149,6 +149,7 @@ function CountdownForm({ setLatestCountdowns }) {
 	}
 
 	function handleStyleValueChange(name, values) {
+		console.log(name, values)
 		setCountdownStyling(precountdownStyling => {
 			return {
 				...precountdownStyling,
@@ -395,6 +396,14 @@ function CountdownForm({ setLatestCountdowns }) {
 						)}
 					</label>
 
+					<label>
+						counter name size:
+						<Slider value={[countdownStyling.countdownNameSize]} onValueChange={(values) => handleStyleValueChange("countdownNameSize", values)}
+						max={100} min={8} step={1} />
+						{countdownStyling.errors.countdownNameSize && (
+							<p className='text-red-500'>{countdownStyling.errors.countdownNameSize}</p>
+						)}
+					</label>
 
 					<Button>Create Countdown</Button>
 				</form>

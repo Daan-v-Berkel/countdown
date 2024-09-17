@@ -1,7 +1,8 @@
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import clsx from 'clsx';
+import ReactFitText from 'react-fittext';
 
 function CountdownDisplay({ className, countdownData, countdownDetails, countdownStyling }) {
   const [timeLeft, setTimeLeft] = useState(
@@ -56,8 +57,10 @@ function CountdownDisplay({ className, countdownData, countdownDetails, countdow
 			border: `${countdownStyling.outerBorderWidth}px ${countdownStyling.outerBorderStyle} ${countdownStyling.outerBorderColor}`,
 			background: countdownStyling.outerBackgroundColor,
 			}}>
-			{countdownDetails.showName &&<div>
-				<h6 className="text-center text-2xl text-green-200 py-2">{countdownDetails.countdownName}</h6>
+			{countdownDetails.showName &&<div style={{width: `${countdownStyling.countdownNameSize}%`}}>
+				<ReactFitText>
+					<h6 className="text-center text-green-200 py-2">{countdownDetails.countdownName}</h6>
+				</ReactFitText>
 			</div>}
 			<div className={clsx(`w-fit h-fit mx-auto my-auto flex ${countdownStyling.counterOrientation === "vertical" ? "flex-col" : "flex-row"}`)}
 			style={{
